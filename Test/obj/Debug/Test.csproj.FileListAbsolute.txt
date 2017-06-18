@@ -1,0 +1,7 @@
+C:\projects\NeuralNetwork\Test\bin\Debug\Test.exe
+C:\projects\NeuralNetwork\Test\bin\Debug\Test.pdb
+C:\projects\NeuralNetwork\Test\obj\Debug\Test.exe
+C:\projects\NeuralNetwork\Test\obj\Debug\Test.pdb
+C:\projects\NeuralNetwork\Test\bin\Debug\NeuralNetwork.dll
+C:\projects\NeuralNetwork\Test\bin\Debug\NeuralNetwork.pdb
+C:\projects\NeuralNetwork\Test\obj\Debug\Test.csprojResolveAssemblyReference.cache
