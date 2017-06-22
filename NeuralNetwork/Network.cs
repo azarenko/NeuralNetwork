@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace NeuralNetwork
@@ -10,6 +11,7 @@ namespace NeuralNetwork
         private int outputCount;
         private int hidelayersCount;
         private int neuronsInLayerCount;
+        private double error;
 
         private List<Neuron> ALayer = new List<Neuron>();
         private List<List<Neuron>> HideLayers = new List<List<Neuron>>();
@@ -108,14 +110,42 @@ namespace NeuralNetwork
             }
         }
 
-        public void Teach(double[] EtalonSet)
+        public double Teach(double[][] EtalonDataSet, double permissibleError)
         {
 
+
+            return error;
         }
 
         public void Save(string fileName)
         {
+            using (StreamWriter sw = new StreamWriter(fileName, false))
+            {
+                sw.WriteLine(string.Format("inputCount={0}", inputCount));
+                sw.WriteLine(string.Format("outputCount={0}", outputCount));
+                sw.WriteLine(string.Format("hidelayersCount={0}", hidelayersCount));
+                sw.WriteLine(string.Format("neuronsInLayerCount={0}", neuronsInLayerCount));
+                sw.WriteLine(string.Format("error={0}", error));
 
+                for (int i = 0; i < neuronsInLayerCount; i++)
+                {
+                    for (int j = 0; j < neuronsInLayerCount; j++)
+                    {
+                        sw.WriteLine(string.Format("ALayer[{0}].W[{1}]={2}", i, j, ALayer[i].W[j]));
+                    }
+                }
+
+            }
+        }
+
+        public void Load(string fileName, ActivationFunction F)
+        {
+
+        }
+
+        public double Error
+        {
+            get { return this.error; }
         }
 
         public double[] GetOutput()

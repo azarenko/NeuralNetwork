@@ -14,7 +14,7 @@ namespace Test
             net.SetInput(new double[] { 1, 0 });
             double[] outPut = net.GetOutput();
 
-            int i = outPut.Length;
+            net.Save("temp.net");
         }
     }
 }
