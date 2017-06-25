@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace NeuralNetwork
 {
@@ -135,12 +136,94 @@ namespace NeuralNetwork
                     }
                 }
 
+                for (int i = 0; i < hidelayersCount; i++)
+                {
+                    for (int j = 0; j < neuronsInLayerCount; j++)
+                    {
+                        for (int k = 0; k < neuronsInLayerCount; k++)
+                        {
+                            sw.WriteLine(string.Format("HideLayers[{0}][{1}].W[{2}]={3}", i, j, k, this.HideLayers[i][j].W[k]));
+                        }
+                    }
+                }
+
+                // Combine out layer
+                for (int j = 0; j < this.outputCount; j++)
+                {
+                    for (int k = 0; k < neuronsInLayerCount; k++)
+                    {
+                        sw.WriteLine(string.Format("OutPutLayer[{0}].W[{1}]={2}", j, k, this.OutPutLayer[j].W[k]));
+                    }
+                }
             }
         }
 
-        public void Load(string fileName, ActivationFunction F)
+        private static string ParseValue(string line)
         {
+            Regex re = new Regex("^.*=(.*)$");
+            Match m = re.Match(line);
+            return m.Groups[1].Value;
+        }
 
+        public static Network Load(string fileName, ActivationFunction F)
+        {
+            Network net = null;
+
+            using (StreamReader sr = new StreamReader(fileName))
+            {
+                string line = sr.ReadLine();
+                int inputCount = int.Parse(ParseValue(line));
+
+                line = sr.ReadLine();
+                int outputCount = int.Parse(ParseValue(line));
+
+                line = sr.ReadLine();
+                int hidelayersCount = int.Parse(ParseValue(line));
+
+                line = sr.ReadLine();
+                int neuronsInLayerCount = int.Parse(ParseValue(line));
+
+                line = sr.ReadLine();
+                double error = double.Parse(ParseValue(line));
+
+                net = new Network(inputCount, outputCount, hidelayersCount, neuronsInLayerCount, F);
+
+                for (int i = 0; i < neuronsInLayerCount; i++)
+                {
+                    for (int j = 0; j < neuronsInLayerCount; j++)
+                    {
+                        line = sr.ReadLine();
+                        double value = double.Parse(ParseValue(line));
+                        net.ALayer[i].W[j] = value;
+                    }
+                }
+
+                for (int i = 0; i < hidelayersCount; i++)
+                {
+                    for (int j = 0; j < neuronsInLayerCount; j++)
+                    {
+                        for (int k = 0; k < neuronsInLayerCount; k++)
+                        {
+                            line = sr.ReadLine();
+                            double value = double.Parse(ParseValue(line));
+                            net.HideLayers[i][j].W[k] = value;
+                        }
+                    }
+                }
+
+                // Combine out layer
+                for (int j = 0; j < outputCount; j++)
+                {
+                    for (int k = 0; k < neuronsInLayerCount; k++)
+                    {
+                        line = sr.ReadLine();
+                        double value = double.Parse(ParseValue(line));
+                        net.OutPutLayer[j].W[k] = value;
+                    }
+                }
+            }
+
+            return net;
         }
 
         public double Error
