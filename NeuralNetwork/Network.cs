@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace NeuralNetwork
@@ -111,11 +109,35 @@ namespace NeuralNetwork
             }
         }
 
-        public double Teach(double[][] EtalonDataSet, double permissibleError)
+        private void TeachIteration(double[] DataSet, double[] Result)
         {
 
+        }
 
-            return error;
+        public double Teach(double[][] DataSet, double[][] Results, double permissibleError)
+        {
+            do
+            {
+                this.error = 0.0;
+
+                for(int i = 0; i < DataSet.Length; i++)
+                {
+                    TeachIteration(DataSet[i], Results[i]);
+
+                    SetInput(DataSet[i]);
+                    double[] outPut = GetOutput();
+
+                    for(int j = 0; j < Results[i].Length; j++)
+                    {
+                        this.error += outPut[j] / Results[i][j];
+                    }
+                }
+
+                this.error /= (Results.Length * Results[0].Length);
+            }
+            while (this.error > permissibleError);
+
+            return this.error;
         }
 
         public void Save(string fileName)
@@ -128,19 +150,19 @@ namespace NeuralNetwork
                 sw.WriteLine(string.Format("neuronsInLayerCount={0}", neuronsInLayerCount));
                 sw.WriteLine(string.Format("error={0}", error));
 
-                for (int i = 0; i < neuronsInLayerCount; i++)
+                for (int i = 0; i < this.neuronsInLayerCount; i++)
                 {
-                    for (int j = 0; j < neuronsInLayerCount; j++)
+                    for (int j = 0; j < this.neuronsInLayerCount; j++)
                     {
-                        sw.WriteLine(string.Format("ALayer[{0}].W[{1}]={2}", i, j, ALayer[i].W[j]));
+                        sw.WriteLine(string.Format("ALayer[{0}].W[{1}]={2}", i, j, this.ALayer[i].W[j]));
                     }
                 }
 
-                for (int i = 0; i < hidelayersCount; i++)
+                for (int i = 0; i < this.hidelayersCount; i++)
                 {
-                    for (int j = 0; j < neuronsInLayerCount; j++)
+                    for (int j = 0; j < this.neuronsInLayerCount; j++)
                     {
-                        for (int k = 0; k < neuronsInLayerCount; k++)
+                        for (int k = 0; k < this.neuronsInLayerCount; k++)
                         {
                             sw.WriteLine(string.Format("HideLayers[{0}][{1}].W[{2}]={3}", i, j, k, this.HideLayers[i][j].W[k]));
                         }
@@ -150,7 +172,7 @@ namespace NeuralNetwork
                 // Combine out layer
                 for (int j = 0; j < this.outputCount; j++)
                 {
-                    for (int k = 0; k < neuronsInLayerCount; k++)
+                    for (int k = 0; k < this.neuronsInLayerCount; k++)
                     {
                         sw.WriteLine(string.Format("OutPutLayer[{0}].W[{1}]={2}", j, k, this.OutPutLayer[j].W[k]));
                     }
